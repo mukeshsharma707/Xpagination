@@ -7,13 +7,21 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 10
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
+    try{
       const result = await axios.get(
         'https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json'
       )
       setData(result.data)
     }
+    catch(err)
+  {
+    alert('Error fetching data:', err);
+  }
+  }
+
+  useEffect(() => {
+    
     fetchData()
   }, [])
 
