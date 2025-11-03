@@ -60,7 +60,7 @@ function App() {
           className="pagination"
           style={{ marginTop: '20px', textAlign: 'center' }}
         >
-          <button onClick={handlePrev} disabled={currentPage === 1}>
+          <button onClick={handlePrev} >
             ◀ Previous
           </button>
 
@@ -68,7 +68,7 @@ function App() {
            {currentPage}
           </span>
 
-          <button onClick={handleNext} disabled={currentPage === totalPages}>
+          <button onClick={handleNext}>
             Next ▶
           </button>
         </div>
