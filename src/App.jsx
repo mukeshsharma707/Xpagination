@@ -1,33 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [data, setData] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const rowsPerPage = 10
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get(
+        'https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json'
+      )
+      setData(result.data)
+    }
+    fetchData()
+  }, [])
+
+  // pagination logic
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow)
+  const totalPages = Math.ceil(data.length / rowsPerPage)
+
+  const handlePrev = () => currentPage > 1 && setCurrentPage(currentPage - 1)
+  const handleNext = () => currentPage < totalPages && setCurrentPage(currentPage + 1)
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h1 className="heading">Employee Data Table</h1>
+
+      <div className="table">
+        <table className="table-main">
+          <thead style={{ background: 'green' }}>
+            <tr style={{ height: '30px', color: 'white' }}>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentRows.map((newrow) => (
+              <tr
+                key={newrow.id}
+                style={{ borderBottom: 'solid 1px gray', height: '30px' }}
+              >
+                <td>{newrow.id}</td>
+                <td>{newrow.name}</td>
+                <td>{newrow.email}</td>
+                <td>{newrow.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Pagination Controls */}
+        <div
+          className="pagination"
+          style={{ marginTop: '20px', textAlign: 'center' }}
+        >
+          <button onClick={handlePrev} disabled={currentPage === 1}>
+            ◀ Previous
+          </button>
+
+          <span style={{ margin: '0 10px' }}>
+           {currentPage}
+          </span>
+
+          <button onClick={handleNext} disabled={currentPage === totalPages}>
+            Next ▶
+          </button>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
