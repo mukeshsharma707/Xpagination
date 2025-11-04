@@ -16,7 +16,7 @@ function App() {
     }
     catch(err)
   {
-    alert('Error fetching data:', err);
+    alert('failed to fetch data:', err);
   }
   }
 
